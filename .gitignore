@@ -1,0 +1,7 @@
+**/auth.py
+.env
+**/other.py
+**/alembic/
+**/venv/
+__pycache__/
+alembic.ini

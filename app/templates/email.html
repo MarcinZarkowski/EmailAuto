@@ -1,0 +1,31 @@
+<html>
+<body style="margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', Arial, Helvetica, sans-serif; background-color: transparent; color: #e0e0e0; line-height: 1.6;">
+  <div style="max-width: 600px; margin: 20px auto; background: #1e1e1e; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);">
+    <!-- Header Section -->
+    <div style="background: linear-gradient(90deg, #0077b6, #00b4d8); padding: 20px; text-align: center; color: #ffffff;">
+      <h1 style="margin: 0; font-size: 28px;">{{ title }}</h1>
+    </div>
+
+    <!-- Body Section -->
+    <div style="padding: 30px; text-align: center;">
+      <h3 style="margin-bottom: 20px; font-size: 22px; color: #bbbbbb;">{{ sub_title }}</h3>
+      <p style="margin-bottom: 30px; font-size: 16px; color: #cccccc;">{{ message }}</p>
+      <a href="{{ link }}" 
+         target="_blank" 
+         style="display: inline-block; margin: 20px auto; padding: 12px 24px; background-color: #0077b6; color: #ffffff; font-size: 18px; font-weight: bold; text-decoration: none; border-radius: 8px; transition: all 0.3s ease;">
+        {{ button_text }}
+      </a>
+    </div>
+
+    <!-- Divider -->
+    <hr style="border: none; border-top: 1px solid #333333; margin: 20px 0;">
+
+    <!-- Footer Section -->
+    <div style="padding: 20px; text-align: center; background: #1e1e1e;">
+      <p style="font-size: 14px; color: #777777; margin: 0;">
+        © {{ year }} Dripity. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
