@@ -51,16 +51,17 @@ class User(Base):
     subscription_level = Column(Integer, default=0)
     date_joined = Column(DateTime, default=datetime.datetime.now)
 
+    state = Column(String, unique=True, index=True)
+    state_created_at = Column(DateTime(timezone=True)) 
+
     storage_used = Column(Integer, default=0)  # In bytes
     verified = Column(Boolean, default=False)
     verification_hash = Column(String(255), nullable=False, default="")
     biz_emails = Column(Integer, default=0)
-    refresh = Column(String(255), nullable=True)
-    access = Column(String(255), nullable=True)
-
+    session_active = Column(Boolean, default= False)
     # Relationship to EmailAccount (Multiple email accounts per user)
     email_accounts = relationship("EmailAccount", back_populates="user", cascade="all, delete-orphan")
-
+   
     def __repr__(self):
         return f"<User(name='{self.first_name}', email='{self.email}')>"
 
@@ -71,12 +72,13 @@ class EmailAccount(Base):
     id = Column(Integer, unique=True, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     email_address = Column(String(255), unique=True, nullable=False, index=True)
-    provider = Column(String(100))
-    credentials = Column(LargeBinary)  # Store encrypted credentials (e.g., token, password)
+
+    access = Column(LargeBinary)  # Store encrypted credentials (e.g., token, password)
+    refresh = Column(LargeBinary)  # Store encrypted credentials (e.g., token, password)
+
     date_added = Column(DateTime, default=datetime.datetime.now)
     verified = Column(Boolean, default=False)
-    verification_hash = Column(String(255), nullable=False)
-
+    
     # Relationships
     user = relationship("User", back_populates="email_accounts")
     files = relationship("DBFile", back_populates="email_account", cascade="all, delete-orphan")

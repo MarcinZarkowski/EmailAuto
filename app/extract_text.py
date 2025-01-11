@@ -1,6 +1,6 @@
 from fastapi import HTTPException, UploadFile
 from docx import Document
-# import pdfplumber
+import pdfplumber
 import io
 import asyncio
 

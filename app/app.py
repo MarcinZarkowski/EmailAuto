@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body, Depends, HTTPException, status, File, UploadFile, Header, Request
+from fastapi import FastAPI, Body, Depends, HTTPException, status, File, UploadFile, Header, Request, Query
 from sqlalchemy.orm import Session
 from .auth import create_user, encode, decode, get_user_by_id, verify_email, login_user, refresh_tokens, logout_user
 from .models import Token, User, LoginRequest, EmailAccount, DBFile, TextEmbedding ,HeaderParams
@@ -20,6 +20,7 @@ import numpy as np
 from sqlalchemy import select
 from fastapi.responses import StreamingResponse
 from sqlalchemy import func
+from .auth import start_google_oauth, google_callback, revoke_google_token
 
 app = FastAPI()
 
@@ -76,6 +77,24 @@ async def logout(user_id:int, header_params: HeaderParams = Depends(get_headers)
     await refresh_access(header_params, db)
     return await logout_user(user_id, db)
 
+@app.get("/auth/start-google-oauth")
+async def oauth_initiate( header_params: HeaderParams = Depends(get_headers), user_id: str = Query(...), db=Depends(get_db)):
+    # Refresh tokens if necessary
+    tokens = await refresh_tokens(header_params, db)
+
+    # Start Google OAuth
+    response = await start_google_oauth(user_id, db)
+
+    # Include refreshed tokens in the response
+    response.update(tokens)
+
+    print(response)
+    return response
+@app.get("/auth/google-callback")
+async def google_ask( code: str, state: str, db=Depends(get_db)):
+    print("CODE IS: ", code)
+    print("STATE IS: ", state)
+    return await google_callback(code, state, db)
 
 #######################################################################
 
@@ -186,6 +205,9 @@ async def delete_email(
     if email_account.user_id != tokens["user_id"]:
         raise HTTPException(status_code=403, detail="You are not authorized to delete this email account")
     
+    if email_account.access:    
+        revoke_google_token(decode(email_account.access))
+
     db.delete(email_account)
     db.commit()
     
